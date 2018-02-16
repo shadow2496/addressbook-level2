@@ -244,8 +244,8 @@ public class Parser {
                     FindCommand.MESSAGE_USAGE));
         }
 
-        // keywords delimited by whitespace
-        final String[] keywords = matcher.group("keywords").split("\\s+");
+        // keywords converted to lowercase letters and delimited by whitespace
+        final String[] keywords = matcher.group("keywords").toLowerCase().split("\\s+");
         final Set<String> keywordSet = new HashSet<>(Arrays.asList(keywords));
         return new FindCommand(keywordSet);
     }
