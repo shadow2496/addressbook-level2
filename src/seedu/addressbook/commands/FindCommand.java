@@ -24,7 +24,7 @@ public class FindCommand extends Command {
     private final Set<String> keywords;
 
     public FindCommand(Set<String> keywords) {
-        this.keywords = keywords;
+        this.keywords = toLowerCase(keywords);
     }
 
     /**
@@ -38,6 +38,20 @@ public class FindCommand extends Command {
     public CommandResult execute() {
         final List<ReadOnlyPerson> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         return new CommandResult(getMessageForPersonListShownSummary(personsFound), personsFound);
+    }
+
+    /**
+     * Converts keywords to lower case.
+     *
+     * @param keywords for searching
+     * @return keywords converted to lowercase
+     */
+    private Set<String> toLowerCase(Set<String> keywords) {
+        final Set<String> convertedKeywords = new HashSet<>();
+        for (String keyword : keywords) {
+            convertedKeywords.add(keyword.toLowerCase());
+        }
+        return convertedKeywords;
     }
 
     /**
