@@ -25,36 +25,40 @@ public class EditCommand extends Command {
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
 
-    private final ReadOnlyPerson target;
-    private final Person toAdd;
+    private Phone phone;
+    private Email email;
+    private Address address;
 
     /**
      * Convenience constructor using raw values.
      *
-     * @throws IndexOutOfBoundsException if the target index is out of bounds of the last viewed listing
      * @throws IllegalValueException if any of the raw values are invalid
      */
     public EditCommand (int targetVisibleIndex,
                         String phone, boolean isPhonePrivate,
                         String email, boolean isEmailPrivate,
-                        String address, boolean isAddressPrivate) throws IndexOutOfBoundsException, IllegalValueException {
+                        String address, boolean isAddressPrivate) throws IllegalValueException {
         super(targetVisibleIndex);
-        this.target = getTargetPerson();
-        this.toAdd = new Person(
-                target.getName(),
-                (phone == null) ? target.getPhone() : new Phone(phone, isPhonePrivate),
-                (email == null) ? target.getEmail() : new Email(email, isEmailPrivate),
-                (address == null) ? target.getAddress() : new Address(address, isAddressPrivate),
-                target.getTags()
-        );
+        this.phone = (phone == null) ? null : new Phone(phone, isPhonePrivate);
+        this.email = (email == null) ? null : new Email(email, isEmailPrivate);
+        this.address = (address == null) ? null : new Address(address, isAddressPrivate);
     }
 
     @Override
     public CommandResult execute() {
         try {
+            final ReadOnlyPerson target = getTargetPerson();
             addressBook.removePerson(target);
-            addressBook.addPerson(toAdd);
+            addressBook.addPerson(new Person(
+                    target.getName(),
+                    (phone == null) ? target.getPhone() : phone,
+                    (email == null) ? target.getEmail() : email,
+                    (address == null) ? target.getAddress() : address,
+                    target.getTags()
+            ));
             return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, target));
+        } catch (IndexOutOfBoundsException ie) {
+            return new CommandResult(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         } catch (PersonNotFoundException pnfe) {
             return new CommandResult(Messages.MESSAGE_PERSON_NOT_IN_ADDRESSBOOK);
         } catch (DuplicatePersonException dpe) {
