@@ -179,7 +179,10 @@ public class Parser {
             final int targetIndex = parseArgsAsDisplayedIndex(targetIndexStr);
             matcher = PERSON_DATA_EDIT_ARGS_FORMAT.matcher(arguments);
             // Validate arg string format
-            if (!matcher.matches()) {
+            if (!matcher.matches()
+                    || (matcher.group("phone") == null
+                    && matcher.group("email") == null
+                    && matcher.group("address") == null)) {
                 return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         EditCommand.MESSAGE_USAGE));
             }
@@ -198,7 +201,7 @@ public class Parser {
         } catch (ParseException pe) {
             return new IncorrectCommand(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     EditCommand.MESSAGE_USAGE));
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException | IndexOutOfBoundsException nfe) {
             return new IncorrectCommand(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         } catch (IllegalValueException ive) {
             return new IncorrectCommand(ive.getMessage());
