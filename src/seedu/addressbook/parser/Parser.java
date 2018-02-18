@@ -44,8 +44,8 @@ public class Parser {
                     + " (?<isAddressPrivate>p?)a/(?<address>[^/]+)"
                     + "(?<tagArguments>(?: t/[^/]+)*)"); // variable number of tags
     public static final Pattern PERSON_DATA_EDIT_ARGS_FORMAT = // '/' forward slashes are reserved for delimiter prefixes
-            Pattern.compile("( (?<isPhonePrivate>p?)p/(?<phone>[^/]+))?"
-                    + "( (?<isEmailPrivate>p?)e/(?<email>[^/]+))?"
+            Pattern.compile("( (?<isPhonePrivate>p?)p/(?<phone>[^\\s/]+))?"
+                    + "( (?<isEmailPrivate>p?)e/(?<email>[^\\s/]+))?"
                     + "( (?<isAddressPrivate>p?)a/(?<address>[^/]+))?");
 
     /**
