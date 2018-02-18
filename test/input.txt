@@ -10,6 +10,7 @@
 ##########################################################
 
   # should show appropriate message when no listing has happened yet
+  edit 1 p/12345
   delete 1
   view 1
   viewall 1
@@ -53,6 +54,45 @@
 
   # should not allow adding duplicate persons
   add Esther Potato p/555555 e/esther@not.a.real.potato pa/555, epsilon street t/tubers t/starchy
+
+##########################################################
+# test edit person command
+##########################################################
+
+  # should catch invalid args format
+  edit
+  edit 1
+  edit 1 wrong args wrong args
+  edit 1 12345 e/valid@email.butNoPhonePrefix
+  edit 1 12345 a/valid, address, butNoPhonePrefix
+  edit 1 p/12345 valid@email.butNoPrefix
+  edit 1 valid@email.butNoPrefix a/valid, address
+  edit 1 p/12345 valid, address, butNoPrefix
+  edit 1 e/valid@email.butNoAddressPrefix valid, address
+  edit 1 12345 e/valid@email.butNoPhonePrefix a/valid, address
+  edit 1 p/12345 valid@email.butNoPrefix a/valid, address
+  edit 1 p/12345 e/valid@email.butNoAddressPrefix valid, address
+  edit should be only one number p/12345
+
+  # should catch invalid index
+  edit -1 p/12345
+  edit 0 p/12345
+  edit 6 p/12345
+
+  # should catch invalid person data
+  edit 1 p/not_numbers e/valid@e.mail a/valid, address
+  edit 1 p/12345 e/notAnEmail a/valid, address
+
+  # should edit correctly and list non private information
+  edit 3 p/333333
+  edit 4 pa/111, alpha street
+  edit 5 p/543210 pe/esther@not.a.real.potato pa/555, epsilon street
+  list
+  edit 3 pp/333333
+  edit 4 a/444, delta street
+  list
+  edit 3 p/555555 e/esther@not.a.real.potato
+  list
 
 ##########################################################
 # test view/viewall persons command

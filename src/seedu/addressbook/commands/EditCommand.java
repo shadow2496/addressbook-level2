@@ -48,15 +48,16 @@ public class EditCommand extends Command {
     public CommandResult execute() {
         try {
             final ReadOnlyPerson target = getTargetPerson();
-            addressBook.removePerson(target);
-            addressBook.addPerson(new Person(
+            final Person toAdd = new Person(
                     target.getName(),
                     (phone == null) ? target.getPhone() : phone,
                     (email == null) ? target.getEmail() : email,
                     (address == null) ? target.getAddress() : address,
                     target.getTags()
-            ));
-            return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, target));
+            );
+            addressBook.removePerson(target);
+            addressBook.addPerson(toAdd);
+            return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, toAdd));
         } catch (IndexOutOfBoundsException ie) {
             return new CommandResult(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         } catch (PersonNotFoundException pnfe) {
